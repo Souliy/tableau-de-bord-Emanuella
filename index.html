@@ -76,14 +76,46 @@
     display: flex;
     gap: 2rem;
     flex-wrap: wrap;
+    align-items: center;
   }
   .meta-item {
     font-size: 13px;
     color: var(--beige-mid);
+    display: flex;
+    align-items: center;
+    gap: 6px;
   }
   .meta-item span {
     color: var(--white);
     font-weight: 500;
+  }
+  /* Editable name fields in header */
+  .meta-editable {
+    background: none;
+    border: none;
+    border-bottom: 1px dashed rgba(255,255,255,0.3);
+    color: var(--white);
+    font-weight: 500;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    outline: none;
+    cursor: text;
+    padding: 1px 4px;
+    min-width: 80px;
+    transition: border-color 0.2s;
+  }
+  .meta-editable:focus {
+    border-bottom-color: var(--sand);
+    background: rgba(255,255,255,0.06);
+    border-radius: 3px 3px 0 0;
+  }
+  .meta-editable::placeholder { color: rgba(255,255,255,0.35); }
+  .edit-hint {
+    font-size: 10px;
+    color: var(--sand);
+    letter-spacing: 0.06em;
+    opacity: 0.7;
+    margin-top: 0.4rem;
   }
 
   /* ── Progress bar ── */
@@ -439,14 +471,15 @@
   <div class="header-label">Stage · Études Économiques</div>
   <h1>Journal de Bord</h1>
   <div class="header-meta">
-    <div class="meta-item">Stagiaire <span id="stagiaire-name">Miora Emanuella Aljaona</span></div>
-    <div class="meta-item">Tutrice <span id="tutrice-name">Pauline Heurtebize</span></div>
+    <div class="meta-item">Stagiaire <input class="meta-editable" id="stagiaire-name" placeholder="Prénom Nom" maxlength="60" /></div>
+    <div class="meta-item">Tutrice <input class="meta-editable" id="tutrice-name" placeholder="Prénom Nom" maxlength="60" /></div>
     <div class="meta-item">Période <span>Avril – Octobre 2026</span></div>
   </div>
+  <div class="edit-hint">✎ Cliquez sur les champs pour modifier votre nom et celui de votre tutrice</div>
   <div class="progress-bar-wrap">
     <div class="progress-label">
       <span>Progression du stage</span>
-      <span id="progress-txt">0 / 26 semaines</span>
+      <span id="progress-txt">0 / 27 semaines</span>
     </div>
     <div class="progress-track">
       <div class="progress-fill" id="progress-fill"></div>
@@ -473,7 +506,7 @@
   <nav class="sidebar">
     <div class="sidebar-title">Navigation</div>
     <button class="month-btn active" onclick="showMonth('avril')" id="nav-avril">
-      Avril <span class="month-pill" id="pill-avril">0/4</span>
+      Avril <span class="month-pill" id="pill-avril">0/2</span>
     </button>
     <button class="month-btn" onclick="showMonth('mai')" id="nav-mai">
       Mai <span class="month-pill" id="pill-mai">0/5</span>
@@ -490,87 +523,106 @@
     <button class="month-btn" onclick="showMonth('sept')" id="nav-sept">
       Septembre <span class="month-pill" id="pill-sept">0/4</span>
     </button>
+    <button class="month-btn" onclick="showMonth('oct')" id="nav-oct">
+      Octobre <span class="month-pill" id="pill-oct">0/1</span>
+    </button>
   </nav>
 
   <main class="content" id="main-content"></main>
 </div>
 
 <script>
+const TOTAL_WEEKS = 27;
+
 const MONTHS = [
   {
-    id: 'avril', label: 'Avril 2025',
+    id: 'avril', label: 'Avril 2026',
     weeks: [
-      { n: 1, dates: '31 mars – 4 avril' },
-      { n: 2, dates: '7 – 11 avril' },
-      { n: 3, dates: '14 – 18 avril' },
-      { n: 4, dates: '22 – 25 avril' },
+      { n: 1, dates: '13 – 17 avril' },
+      { n: 2, dates: '20 – 25 avril' },
     ]
   },
   {
-    id: 'mai', label: 'Mai 2025',
+    id: 'mai', label: 'Mai 2026',
     weeks: [
-      { n: 5, dates: '28 avril – 2 mai' },
-      { n: 6, dates: '5 – 9 mai' },
-      { n: 7, dates: '12 – 16 mai' },
-      { n: 8, dates: '19 – 23 mai' },
-      { n: 9, dates: '26 – 30 mai' },
+      { n: 3, dates: '28 avril – 2 mai' },
+      { n: 4, dates: '5 – 9 mai' },
+      { n: 5, dates: '12 – 16 mai' },
+      { n: 6, dates: '19 – 23 mai' },
+      { n: 7, dates: '26 – 30 mai' },
     ]
   },
   {
-    id: 'juin', label: 'Juin 2025',
+    id: 'juin', label: 'Juin 2026',
     weeks: [
-      { n: 10, dates: '2 – 6 juin' },
-      { n: 11, dates: '9 – 13 juin' },
-      { n: 12, dates: '16 – 20 juin' },
-      { n: 13, dates: '23 – 27 juin' },
+      { n: 8,  dates: '2 – 6 juin' },
+      { n: 9,  dates: '9 – 13 juin' },
+      { n: 10, dates: '16 – 20 juin' },
+      { n: 11, dates: '23 – 27 juin' },
     ]
   },
   {
-    id: 'juillet', label: 'Juillet 2025',
+    id: 'juillet', label: 'Juillet 2026',
     weeks: [
-      { n: 14, dates: '30 juin – 4 juillet' },
-      { n: 15, dates: '7 – 11 juillet' },
-      { n: 16, dates: '14 – 18 juillet' },
-      { n: 17, dates: '21 – 25 juillet' },
+      { n: 12, dates: '30 juin – 4 juillet' },
+      { n: 13, dates: '7 – 11 juillet' },
+      { n: 14, dates: '14 – 18 juillet' },
+      { n: 15, dates: '21 – 25 juillet' },
     ]
   },
   {
-    id: 'aout', label: 'Août 2025',
+    id: 'aout', label: 'Août 2026',
     weeks: [
-      { n: 18, dates: '28 juillet – 1 août' },
-      { n: 19, dates: '4 – 8 août' },
-      { n: 20, dates: '11 – 15 août' },
-      { n: 21, dates: '18 – 22 août' },
-      { n: 22, dates: '25 – 29 août' },
+      { n: 16, dates: '28 juillet – 1 août' },
+      { n: 17, dates: '4 – 8 août' },
+      { n: 18, dates: '11 – 15 août' },
+      { n: 19, dates: '18 – 22 août' },
+      { n: 20, dates: '25 – 29 août' },
     ]
   },
   {
-    id: 'sept', label: 'Septembre 2025',
+    id: 'sept', label: 'Septembre 2026',
     weeks: [
-      { n: 23, dates: '1 – 5 septembre' },
-      { n: 24, dates: '8 – 12 septembre' },
-      { n: 25, dates: '15 – 19 septembre' },
-      { n: 26, dates: '22 – 26 septembre' },
+      { n: 21, dates: '1 – 5 septembre' },
+      { n: 22, dates: '8 – 12 septembre' },
+      { n: 23, dates: '15 – 19 septembre' },
+      { n: 24, dates: '22 – 26 septembre' },
+    ]
+  },
+  {
+    id: 'oct', label: 'Octobre 2026',
+    weeks: [
+      { n: 25, dates: '29 septembre – 3 octobre' },
+      { n: 26, dates: '6 – 10 octobre' },
+      { n: 27, dates: '13 – 17 octobre' },
     ]
   },
 ];
 
+// New ordered fields structure:
+// 1. Missions réalisées (full)
+// 2. Thématiques économiques abordées
+// 3. Méthodes & outils utilisés
+// 4. Ressources consultées (moved here, after outils)
+// 5. Difficultés rencontrées
+// 6. Objectifs semaine suivante
+// 7. À retenir (full, at the bottom)
 const FIELDS = [
-  { key: 'missions', label: 'Missions réalisées', full: true },
-  { key: 'thematiques', label: 'Thématiques économiques abordées', full: false },
-  { key: 'outils', label: 'Méthodes & outils utilisés', full: false },
-  { key: 'retenu', label: 'Ce que j\'ai retenu', full: true },
-  { key: 'difficultes', label: 'Difficultés rencontrées', full: false },
-  { key: 'objectifs', label: 'Objectifs semaine suivante', full: false },
-  { key: 'ressources', label: 'Ressources consultées', full: true },
+  { key: 'missions',    label: 'Missions réalisées',                    full: true  },
+  { key: 'thematiques',label: 'Thématiques économiques abordées',       full: false },
+  { key: 'outils',     label: 'Méthodes & outils utilisés',            full: false },
+  { key: 'ressources', label: 'Ressources consultées',                  full: true  },
+  { key: 'difficultes',label: 'Difficultés rencontrées',               full: false },
+  { key: 'objectifs',  label: 'Objectifs semaine suivante',            full: false },
+  { key: 'retenu',     label: 'À retenir',                             full: true  },
 ];
 
 const CHARGES = ['Légère', 'Modérée', 'Intense'];
-let data = JSON.parse(localStorage.getItem('journal_stage') || '{}');
+let data = JSON.parse(localStorage.getItem('journal_stage_2026') || '{}');
 
 function save(key, val) {
   data[key] = val;
-  localStorage.setItem('journal_stage', JSON.stringify(data));
+  localStorage.setItem('journal_stage_2026', JSON.stringify(data));
 }
 function get(key, def = '') { return data[key] !== undefined ? data[key] : def; }
 
@@ -585,8 +637,8 @@ function countDone(month) {
 function updateStats() {
   const done = MONTHS.reduce((a, m) => a + countDone(m), 0);
   document.getElementById('stat-done').textContent = done;
-  document.getElementById('progress-txt').textContent = `${done} / 26 semaines`;
-  document.getElementById('progress-fill').style.width = `${Math.round(done / 26 * 100)}%`;
+  document.getElementById('progress-txt').textContent = `${done} / ${TOTAL_WEEKS} semaines`;
+  document.getElementById('progress-fill').style.width = `${Math.round(done / TOTAL_WEEKS * 100)}%`;
 
   const now = new Date();
   const monthNames = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
@@ -603,9 +655,9 @@ function updateStats() {
   document.getElementById('stat-charge').textContent = lastCharge;
 
   MONTHS.forEach(m => {
-    const done = countDone(m);
+    const d = countDone(m);
     const el = document.getElementById(`pill-${m.id}`);
-    if (el) el.textContent = `${done}/${m.weeks.length}`;
+    if (el) el.textContent = `${d}/${m.weeks.length}`;
   });
 }
 
@@ -670,6 +722,7 @@ function render() {
   document.getElementById('main-content').innerHTML = MONTHS.map(buildMonth).join('');
   showMonth('avril');
   updateStats();
+  initNameFields();
 }
 
 function showMonth(id) {
@@ -698,8 +751,8 @@ function setCharge(n, val, btn) {
 function saveWeek(n) {
   const card = document.getElementById(`wcard-${n}`);
   card.querySelectorAll('textarea').forEach(ta => {
-    const key = ta.getAttribute('onchange').match(/'([^']+)'/)[1];
-    save(key, ta.value);
+    const match = ta.getAttribute('onchange') && ta.getAttribute('onchange').match(/'([^']+)'/);
+    if (match) save(match[1], ta.value);
   });
   const hasData = weekHasData(n);
   card.classList.toggle('has-data', hasData);
@@ -711,6 +764,17 @@ function saveWeek(n) {
   note.classList.add('show');
   setTimeout(() => note.classList.remove('show'), 2000);
   updateStats();
+}
+
+function initNameFields() {
+  const stagiaire = document.getElementById('stagiaire-name');
+  const tutrice   = document.getElementById('tutrice-name');
+
+  stagiaire.value = get('meta_stagiaire', '');
+  tutrice.value   = get('meta_tutrice',   '');
+
+  stagiaire.addEventListener('input',  () => save('meta_stagiaire', stagiaire.value));
+  tutrice.addEventListener('input',    () => save('meta_tutrice',   tutrice.value));
 }
 
 render();
