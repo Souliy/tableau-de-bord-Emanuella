@@ -466,11 +466,11 @@
 <body>
 
 <header>
-  <div class="header-label">Stage · Études Économiques dans le secteur viticole - FNSEA</div>
+  <div class="header-label">Stage à la FNSEA · Études Économiques dans le secteur viticole</div>
   <h1>Journal de Bord</h1>
   <div class="header-meta">
-    <div class="meta-item">Stagiaire <input class="meta-editable" id="stagiaire-name" placeholder="Prénom Nom" maxlength="60" /></div>
-    <div class="meta-item">Tutrice <input class="meta-editable" id="tutrice-name" placeholder="Prénom Nom" maxlength="60" /></div>
+    <div class="meta-item">Stagiaire: <input class="meta-editable" id="stagiaire-name" placeholder="Prénom Nom" maxlength="100" /></div>
+    <div class="meta-item">Tutrice: <input class="meta-editable" id="tutrice-name" placeholder="Prénom Nom" maxlength="100" /></div>
     <div class="meta-item">Période <span>Avril – Octobre 2026</span></div>
   </div>
   <div class="progress-bar-wrap">
@@ -596,13 +596,13 @@ const MONTHS = [
 ];
 
 // New ordered fields structure:
-// 1. Missions réalisées (full)
+// 1. Missions réalisées 
 // 2. Thématiques économiques abordées
 // 3. Méthodes & outils utilisés
-// 4. Ressources consultées (moved here, after outils)
+// 4. Ressources consultées 
 // 5. Difficultés rencontrées
 // 6. Objectifs semaine suivante
-// 7. À retenir (full, at the bottom)
+// 7. À retenir 
 const FIELDS = [
   { key: 'missions',    label: 'Missions réalisées',                    full: true  },
   { key: 'thematiques',label: 'Thématiques économiques abordées',       full: false },
