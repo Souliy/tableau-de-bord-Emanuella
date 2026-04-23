@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Journal de Bord — Stage</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #F5F0E8;
+    --beige: #E8DFD0;
+    --beige-mid: #D4C4A8;
+    --sand: #C4AA80;
+    --brown-light: #A08060;
+    --brown: #7A5C3C;
+    --brown-dark: #5C3D20;
+    --espresso: #3A2210;
+    --white: #FDFAF5;
+    --text: #3A2210;
+    --text-muted: #8A6E50;
+    --border: #D4C4A8;
+    --shadow: rgba(90, 55, 20, 0.08);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ── Header ── */
+  header {
+    background: var(--espresso);
+    color: var(--cream);
+    padding: 2.5rem 3rem 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 220px; height: 220px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.04);
+  }
+  header::after {
+    content: '';
+    position: absolute;
+    bottom: -40px; left: 40%;
+    width: 160px; height: 160px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.03);
+  }
+  .header-label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--sand);
+    margin-bottom: 0.5rem;
+  }
+  header h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.4rem;
+    font-weight: 500;
+    color: var(--white);
+    line-height: 1.15;
+    margin-bottom: 1.2rem;
+  }
+  .header-meta {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+  .meta-item {
+    font-size: 13px;
+    color: var(--beige-mid);
+  }
+  .meta-item span {
+    color: var(--white);
+    font-weight: 500;
+  }
+
+  /* ── Progress bar ── */
+  .progress-bar-wrap {
+    margin-top: 1.5rem;
+    position: relative;
+    z-index: 1;
+  }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--sand);
+    margin-bottom: 6px;
+    letter-spacing: 0.05em;
+  }
+  .progress-track {
+    height: 4px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--sand);
+    border-radius: 99px;
+    width: 0%;
+    transition: width 0.8s ease;
+  }
+
+  /* ── Stats ── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .stat-card {
+    background: var(--white);
+    padding: 1.2rem 1.5rem;
+    text-align: center;
+  }
+  .stat-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--brown-dark);
+    line-height: 1;
+    display: block;
+  }
+  .stat-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 4px;
+    letter-spacing: 0.04em;
+  }
+
+  /* ── Layout ── */
+  .app {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    min-height: calc(100vh - 200px);
+  }
+
+  /* ── Sidebar ── */
+  .sidebar {
+    background: var(--white);
+    border-right: 1px solid var(--border);
+    padding: 1.5rem 0;
+    position: sticky;
+    top: 0;
+    height: fit-content;
+  }
+  .sidebar-title {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    padding: 0 1.2rem 1rem;
+  }
+  .month-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0.65rem 1.2rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--text-muted);
+    text-align: left;
+    transition: all 0.2s;
+    border-left: 2px solid transparent;
+  }
+  .month-btn:hover { color: var(--brown); background: var(--cream); }
+  .month-btn.active {
+    color: var(--brown-dark);
+    font-weight: 500;
+    background: var(--cream);
+    border-left-color: var(--brown);
+  }
+  .month-pill {
+    font-size: 10px;
+    background: var(--beige);
+    color: var(--brown);
+    padding: 2px 7px;
+    border-radius: 99px;
+  }
+  .month-btn.active .month-pill {
+    background: var(--brown);
+    color: var(--cream);
+  }
+
+  /* ── Content ── */
+  .content {
+    padding: 2rem 2.5rem;
+  }
+  .month-section { display: none; }
+  .month-section.active { display: block; }
+
+  .month-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .month-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem;
+    font-weight: 500;
+    color: var(--espresso);
+  }
+  .month-summary-box {
+    background: var(--beige);
+    border-radius: 8px;
+    padding: 0.8rem 1.2rem;
+    max-width: 280px;
+    text-align: right;
+  }
+  .month-summary-box textarea {
+    background: none;
+    border: none;
+    outline: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    color: var(--brown);
+    width: 100%;
+    resize: none;
+    text-align: right;
+    cursor: pointer;
+  }
+  .month-summary-label {
+    font-size: 10px;
+    color: var(--brown-light);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  /* ── Week cards ── */
+  .weeks { display: flex; flex-direction: column; gap: 10px; }
+
+  .week-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: box-shadow 0.2s, border-color 0.2s;
+  }
+  .week-card:hover { border-color: var(--brown-light); box-shadow: 0 2px 12px var(--shadow); }
+  .week-card.open { border-color: var(--brown-light); }
+
+  .week-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.3rem;
+    cursor: pointer;
+    user-select: none;
+  }
+  .week-head-left { display: flex; align-items: center; gap: 12px; }
+  .week-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--brown-light);
+    min-width: 30px;
+  }
+  .week-info {}
+  .week-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+  }
+  .week-dates {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 1px;
+  }
+  .week-status {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .charge-badge {
+    font-size: 11px;
+    padding: 3px 9px;
+    border-radius: 99px;
+    background: var(--beige);
+    color: var(--brown);
+    display: none;
+  }
+  .week-card.has-data .charge-badge { display: inline-block; }
+  .week-toggle {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background: var(--beige);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px;
+    color: var(--brown);
+    transition: transform 0.25s, background 0.2s;
+    flex-shrink: 0;
+  }
+  .week-card.open .week-toggle { transform: rotate(180deg); background: var(--brown); color: var(--cream); }
+
+  .week-body {
+    display: none;
+    padding: 0 1.3rem 1.3rem;
+    border-top: 1px solid var(--beige);
+  }
+  .week-card.open .week-body { display: block; }
+
+  .fields-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  .field { display: flex; flex-direction: column; gap: 5px; }
+  .field.full { grid-column: 1 / -1; }
+  .field label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .field textarea, .field select {
+    background: var(--cream);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: var(--text);
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.2s;
+    min-height: 72px;
+  }
+  .field select { min-height: auto; cursor: pointer; }
+  .field textarea:focus, .field select:focus { border-color: var(--brown-light); }
+
+  .charge-row {
+    display: flex;
+    gap: 8px;
+    margin-top: 1rem;
+    align-items: center;
+  }
+  .charge-label-txt {
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+    margin-right: 4px;
+  }
+  .charge-opt {
+    padding: 5px 14px;
+    border-radius: 99px;
+    border: 1px solid var(--border);
+    background: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .charge-opt:hover { border-color: var(--brown-light); color: var(--brown); }
+  .charge-opt.selected { background: var(--brown); border-color: var(--brown); color: var(--cream); }
+
+  .save-btn {
+    margin-top: 1.2rem;
+    padding: 8px 20px;
+    background: var(--espresso);
+    color: var(--cream);
+    border: none;
+    border-radius: 6px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.2s;
+    float: right;
+  }
+  .save-btn:hover { background: var(--brown-dark); }
+  .saved-note {
+    font-size: 12px;
+    color: var(--brown-light);
+    margin-top: 0.5rem;
+    text-align: right;
+    opacity: 0;
+    transition: opacity 0.3s;
+    clear: both;
+  }
+  .saved-note.show { opacity: 1; }
+
+  /* ── Empty state ── */
+  .dot-empty {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--beige-mid);
+    display: inline-block;
+    margin-right: 6px;
+  }
+  .dot-done {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--brown-light);
+    display: inline-block;
+    margin-right: 6px;
+  }
+
+  @media (max-width: 700px) {
+    .app { grid-template-columns: 1fr; }
+    .sidebar { position: static; display: flex; flex-wrap: wrap; gap: 6px; padding: 1rem; border-right: none; border-bottom: 1px solid var(--border); }
+    .month-btn { width: auto; border-radius: 99px; border: 1px solid var(--border); border-left: 1px solid var(--border); padding: 6px 14px; font-size: 13px; }
+    .month-btn.active { border-color: var(--brown); border-left-color: var(--brown); }
+    .fields-grid { grid-template-columns: 1fr; }
+    .content { padding: 1.2rem; }
+    .stats-row { grid-template-columns: 1fr 1fr 1fr; }
+    header { padding: 1.5rem; }
+    header h1 { font-size: 1.7rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-label">Stage · Études Économiques</div>
+  <h1>Journal de Bord</h1>
+  <div class="header-meta">
+    <div class="meta-item">Stagiaire <span id="stagiaire-name">Prénom Nom</span></div>
+    <div class="meta-item">Tutrice <span id="tutrice-name">Prénom Nom</span></div>
+    <div class="meta-item">Période <span>Avril – Septembre 2025</span></div>
+  </div>
+  <div class="progress-bar-wrap">
+    <div class="progress-label">
+      <span>Progression du stage</span>
+      <span id="progress-txt">0 / 26 semaines</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progress-fill"></div>
+    </div>
+  </div>
+</header>
+
+<div class="stats-row">
+  <div class="stat-card">
+    <span class="stat-num" id="stat-done">0</span>
+    <div class="stat-label">Semaines complétées</div>
+  </div>
+  <div class="stat-card">
+    <span class="stat-num" id="stat-month">Avril</span>
+    <div class="stat-label">Mois en cours</div>
+  </div>
+  <div class="stat-card">
+    <span class="stat-num" id="stat-charge">—</span>
+    <div class="stat-label">Dernière charge</div>
+  </div>
+</div>
+
+<div class="app">
+  <nav class="sidebar">
+    <div class="sidebar-title">Navigation</div>
+    <button class="month-btn active" onclick="showMonth('avril')" id="nav-avril">
+      Avril <span class="month-pill" id="pill-avril">0/4</span>
+    </button>
+    <button class="month-btn" onclick="showMonth('mai')" id="nav-mai">
+      Mai <span class="month-pill" id="pill-mai">0/5</span>
+    </button>
+    <button class="month-btn" onclick="showMonth('juin')" id="nav-juin">
+      Juin <span class="month-pill" id="pill-juin">0/4</span>
+    </button>
+    <button class="month-btn" onclick="showMonth('juillet')" id="nav-juillet">
+      Juillet <span class="month-pill" id="pill-juillet">0/4</span>
+    </button>
+    <button class="month-btn" onclick="showMonth('aout')" id="nav-aout">
+      Août <span class="month-pill" id="pill-aout">0/5</span>
+    </button>
+    <button class="month-btn" onclick="showMonth('sept')" id="nav-sept">
+      Septembre <span class="month-pill" id="pill-sept">0/4</span>
+    </button>
+  </nav>
+
+  <main class="content" id="main-content"></main>
+</div>
+
+<script>
+const MONTHS = [
+  {
+    id: 'avril', label: 'Avril 2025',
+    weeks: [
+      { n: 1, dates: '31 mars – 4 avril' },
+      { n: 2, dates: '7 – 11 avril' },
+      { n: 3, dates: '14 – 18 avril' },
+      { n: 4, dates: '22 – 25 avril' },
+    ]
+  },
+  {
+    id: 'mai', label: 'Mai 2025',
+    weeks: [
+      { n: 5, dates: '28 avril – 2 mai' },
+      { n: 6, dates: '5 – 9 mai' },
+      { n: 7, dates: '12 – 16 mai' },
+      { n: 8, dates: '19 – 23 mai' },
+      { n: 9, dates: '26 – 30 mai' },
+    ]
+  },
+  {
+    id: 'juin', label: 'Juin 2025',
+    weeks: [
+      { n: 10, dates: '2 – 6 juin' },
+      { n: 11, dates: '9 – 13 juin' },
+      { n: 12, dates: '16 – 20 juin' },
+      { n: 13, dates: '23 – 27 juin' },
+    ]
+  },
+  {
+    id: 'juillet', label: 'Juillet 2025',
+    weeks: [
+      { n: 14, dates: '30 juin – 4 juillet' },
+      { n: 15, dates: '7 – 11 juillet' },
+      { n: 16, dates: '14 – 18 juillet' },
+      { n: 17, dates: '21 – 25 juillet' },
+    ]
+  },
+  {
+    id: 'aout', label: 'Août 2025',
+    weeks: [
+      { n: 18, dates: '28 juillet – 1 août' },
+      { n: 19, dates: '4 – 8 août' },
+      { n: 20, dates: '11 – 15 août' },
+      { n: 21, dates: '18 – 22 août' },
+      { n: 22, dates: '25 – 29 août' },
+    ]
+  },
+  {
+    id: 'sept', label: 'Septembre 2025',
+    weeks: [
+      { n: 23, dates: '1 – 5 septembre' },
+      { n: 24, dates: '8 – 12 septembre' },
+      { n: 25, dates: '15 – 19 septembre' },
+      { n: 26, dates: '22 – 26 septembre' },
+    ]
+  },
+];
+
+const FIELDS = [
+  { key: 'missions', label: 'Missions réalisées', full: true },
+  { key: 'thematiques', label: 'Thématiques économiques abordées', full: false },
+  { key: 'outils', label: 'Méthodes & outils utilisés', full: false },
+  { key: 'retenu', label: 'Ce que j\'ai retenu', full: true },
+  { key: 'difficultes', label: 'Difficultés rencontrées', full: false },
+  { key: 'objectifs', label: 'Objectifs semaine suivante', full: false },
+  { key: 'ressources', label: 'Ressources consultées', full: true },
+];
+
+const CHARGES = ['Légère', 'Modérée', 'Intense'];
+let data = JSON.parse(localStorage.getItem('journal_stage') || '{}');
+
+function save(key, val) {
+  data[key] = val;
+  localStorage.setItem('journal_stage', JSON.stringify(data));
+}
+function get(key, def = '') { return data[key] !== undefined ? data[key] : def; }
+
+function weekHasData(n) {
+  return FIELDS.some(f => get(`w${n}_${f.key}`)) || get(`w${n}_charge`);
+}
+
+function countDone(month) {
+  return month.weeks.filter(w => weekHasData(w.n)).length;
+}
+
+function updateStats() {
+  const done = MONTHS.reduce((a, m) => a + countDone(m), 0);
+  document.getElementById('stat-done').textContent = done;
+  document.getElementById('progress-txt').textContent = `${done} / 26 semaines`;
+  document.getElementById('progress-fill').style.width = `${Math.round(done / 26 * 100)}%`;
+
+  const now = new Date();
+  const monthNames = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+  document.getElementById('stat-month').textContent = monthNames[now.getMonth()];
+
+  let lastCharge = '—';
+  for (let m of [...MONTHS].reverse()) {
+    for (let w of [...m.weeks].reverse()) {
+      const c = get(`w${w.n}_charge`);
+      if (c) { lastCharge = c; break; }
+    }
+    if (lastCharge !== '—') break;
+  }
+  document.getElementById('stat-charge').textContent = lastCharge;
+
+  MONTHS.forEach(m => {
+    const done = countDone(m);
+    const el = document.getElementById(`pill-${m.id}`);
+    if (el) el.textContent = `${done}/${m.weeks.length}`;
+  });
+}
+
+function buildWeek(w) {
+  const hasData = weekHasData(w.n);
+  const charge = get(`w${w.n}_charge`);
+  return `
+  <div class="week-card ${hasData ? 'has-data' : ''}" id="wcard-${w.n}">
+    <div class="week-head" onclick="toggleWeek(${w.n})">
+      <div class="week-head-left">
+        <div class="week-num">${String(w.n).padStart(2,'0')}</div>
+        <div class="week-info">
+          <div class="week-name">${hasData ? '<span class="dot-done"></span>' : '<span class="dot-empty"></span>'}Semaine ${w.n}</div>
+          <div class="week-dates">${w.dates}</div>
+        </div>
+      </div>
+      <div class="week-status">
+        ${charge ? `<span class="charge-badge">${charge}</span>` : ''}
+        <div class="week-toggle">▼</div>
+      </div>
+    </div>
+    <div class="week-body" id="wbody-${w.n}">
+      <div class="fields-grid">
+        ${FIELDS.map(f => `
+          <div class="field ${f.full ? 'full' : ''}">
+            <label>${f.label}</label>
+            <textarea rows="3" placeholder="…" onchange="save('w${w.n}_${f.key}', this.value)">${get(`w${w.n}_${f.key}`)}</textarea>
+          </div>
+        `).join('')}
+      </div>
+      <div class="charge-row">
+        <span class="charge-label-txt">Charge de travail</span>
+        ${CHARGES.map(c => `
+          <button class="charge-opt ${get(`w${w.n}_charge`) === c ? 'selected' : ''}"
+            onclick="setCharge(${w.n}, '${c}', this)">${c}</button>
+        `).join('')}
+      </div>
+      <button class="save-btn" onclick="saveWeek(${w.n})">Enregistrer</button>
+      <div class="saved-note" id="saved-${w.n}">Enregistré ✓</div>
+    </div>
+  </div>`;
+}
+
+function buildMonth(month) {
+  const summary = get(`summary_${month.id}`, 'Résumé du mois…');
+  return `
+  <div class="month-section" id="section-${month.id}">
+    <div class="month-header">
+      <div class="month-title">${month.label}</div>
+      <div class="month-summary-box">
+        <div class="month-summary-label">Résumé du mois</div>
+        <textarea rows="2" style="min-height:40px" onchange="save('summary_${month.id}', this.value)">${summary}</textarea>
+      </div>
+    </div>
+    <div class="weeks">
+      ${month.weeks.map(w => buildWeek(w)).join('')}
+    </div>
+  </div>`;
+}
+
+function render() {
+  document.getElementById('main-content').innerHTML = MONTHS.map(buildMonth).join('');
+  showMonth('avril');
+  updateStats();
+}
+
+function showMonth(id) {
+  document.querySelectorAll('.month-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.month-btn').forEach(b => b.classList.remove('active'));
+  const sec = document.getElementById(`section-${id}`);
+  if (sec) sec.classList.add('active');
+  const btn = document.getElementById(`nav-${id}`);
+  if (btn) btn.classList.add('active');
+}
+
+function toggleWeek(n) {
+  document.getElementById(`wcard-${n}`).classList.toggle('open');
+}
+
+function setCharge(n, val, btn) {
+  save(`w${n}_charge`, val);
+  const card = document.getElementById(`wcard-${n}`);
+  card.querySelectorAll('.charge-opt').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  const badge = card.querySelector('.charge-badge');
+  if (badge) { badge.textContent = val; badge.style.display = 'inline-block'; }
+  updateStats();
+}
+
+function saveWeek(n) {
+  const card = document.getElementById(`wcard-${n}`);
+  card.querySelectorAll('textarea').forEach(ta => {
+    const key = ta.getAttribute('onchange').match(/'([^']+)'/)[1];
+    save(key, ta.value);
+  });
+  const hasData = weekHasData(n);
+  card.classList.toggle('has-data', hasData);
+  const nameEl = card.querySelector('.week-name');
+  if (hasData) {
+    nameEl.innerHTML = '<span class="dot-done"></span>Semaine ' + n;
+  }
+  const note = document.getElementById(`saved-${n}`);
+  note.classList.add('show');
+  setTimeout(() => note.classList.remove('show'), 2000);
+  updateStats();
+}
+
+render();
+</script>
+</body>
+</html>
